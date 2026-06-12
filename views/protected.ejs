@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ruta Protegida</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 40px auto; padding: 20px; text-align: center; }
+        .card { background: #fff3cd; border: 1px solid #ffeeba; padding: 20px; border-radius: 8px; color: #856404; }
+        a { color: #007bff; text-decoration: none; display: inline-block; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Panel de Administración Protegido</h1>
+    <div class="card">
+        <p><strong>Usuario autenticado:</strong> <%= user.username %></p>
+        <p><strong>ID de sesión único (JWT):</strong> <%= user.id %></p>
+        <p>Este contenido solo es visible porque tu token de acceso guardado en la cookie HttpOnly es válido y firmado por el servidor.</p>
+    </div>
+    <a href="/">Volver al Inicio</a>
+</body>
+</html>

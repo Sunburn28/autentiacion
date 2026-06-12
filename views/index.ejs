@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Práctica de Autenticación</title>
+    <style>
+        body { font-family: sans-serif; max-width: 400px; margin: 40px auto; padding: 20px; background: #f4f4f9; }
+        form { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input { display: block; width: 100%; margin: 10px 0; padding: 8px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .nav-btn { background: #28a745; margin-top: 10px; text-align: center; display: block; color: white; text-decoration: none; padding: 10px; border-radius: 4px;}
+        .logout-btn { background: #dc3545; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <% if (user) { %>
+        <h1>¡Hola, <%= user.username %>!</h1>
+        <p>Has iniciado sesión con éxito.</p>
+        <a class="nav-btn" href="/protected">Ir a Ruta Protegida</a>
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+    <% } else { %>
+        <h1>Iniciar Sesión</h1>
+        <form id="login-form">
+            <input type="text" id="login-user" placeholder="Usuario" required>
+            <input type="password" id="login-pass" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
+        </form>
+
+        <h1>Registrarse</h1>
+        <form id="register-form">
+            <input type="text" id="reg-user" placeholder="Usuario nuevo" required>
+            <input type="password" id="reg-pass" placeholder="Contraseña (mín. 6 caracteres)" required>
+            <button type="submit">Crear Cuenta</button>
+        </form>
+    <% } %>
+
+    <script>
+        if (document.getElementById('login-form')) {
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('login-user').value;
+                const password = document.getElementById('login-pass').value;
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok) window.location.reload();
+                else alert('Error: ' + data.error);
+            });
+        }
+
+        if (document.getElementById('register-form')) {
+            document.getElementById('register-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('reg-user').value;
+                const password = document.getElementById('reg-pass').value;
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok) alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                else alert('Error: ' + data.error);
+            });
+        }
+
+        async function logout() {
+            await fetch('/logout', { method: 'POST' });
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
